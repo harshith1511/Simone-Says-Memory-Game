@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Says Colors</title>
+    <style>
+        body {
+        
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #score {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 150px);
+            gap: 20px;
+        }
+        .color-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: none;
+            font-size: 0;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .red { background-color: #FF0000; }
+        .blue { background-color: #0000FF; }
+        .green { background-color: #00FF00; }
+        .yellow { background-color: #FFFF00; }
+    </style>
+</head>
+<body>
+
+    <h1>Simon Says Colors</h1>
+    <div id="score">Score: 0</div>
+    <div id="buttons">
+        <button class="color-button red" onclick="playerClick('red')"></button>
+        <button class="color-button blue" onclick="playerClick('blue')"></button>
+        <button class="color-button green" onclick="playerClick('green')"></button>
+        <button class="color-button yellow" onclick="playerClick('yellow')"></button>
+    </div>
+    <button id="startButton" onclick="startGame()">Start</button>
+
+    <script>
+        let sequence = [];
+        let playerSequence = [];
+        let score = 0;
+        let colors = ['red', 'blue', 'green', 'yellow'];
+
+        function startGame() {
+            sequence = [];
+            playerSequence = [];
+            score = 0;
+            document.getElementById('score').innerText = `Score: ${score}`;
+            nextRound();
+        }
+
+        function nextRound() {
+            playerSequence = [];
+            score++;
+            document.getElementById('score').innerText = `Score: ${score}`;
+            sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            playSequence();
+        }
+
+        function playSequence() {
+            let index = 0;
+            const interval = setInterval(() => {
+                highlightButton(sequence[index]);
+                index++;
+                if (index >= sequence.length) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        function highlightButton(color) {
+            const button = document.querySelector(`.${color}`);
+            button.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 500);
+            // Play sound (placeholder)
+            console.log(`Play sound for ${color}`); // Replace with actual sound logic
+        }
+
+        function playerClick(color) {
+            playerSequence.push(color);
+            highlightButton(color);
+            checkPlayerSequence();
+        }
+
+        function checkPlayerSequence() {
+            const index = playerSequence.length - 1;
+            if (playerSequence[index] !== sequence[index]) {
+                alert(`Game Over! Final Score: ${score}`);
+                return;
+            }
+            if (playerSequence.length === sequence.length) {
+                nextRound();
+            }
+        }
+    </script>
+</body>
+</html>
